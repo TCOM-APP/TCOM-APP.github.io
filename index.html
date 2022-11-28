@@ -1,1 +1,66 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CANS Items Mapping</title>
+    <style>
+        body {background-color: #D0CFCF; display: flex; flex-direction: column; justify-content: start; align-items: center;}
+        .main-card{background-color: #7A7D7D; width: 100%; display: flex; justify-content: center; align-items: center;}
+        .search-card{margin-top: 20px; margin-bottom: 20px; padding: 10px; background-color: #7A7D7D; width: 400px; display: flex; justify-content: center; align-items: center;}
+        table {width: 70%; background-color: #7A7D7D; border-collapse: collapse; margin: auto}
+        td, th{border: 2px solid black; padding: 8px; }
+    </style>
+    <script>
+        window.onload = () =>{getElements();}
+        function getElements(){
+            const searchButton = document.getElementById("submit"); 
+            searchButton.addEventListener('click', search); 
+        }
+        function search(){
+            let searchItem = document.getElementById("search-item").value; 
+            createRows(searchItem); 
+        }
+
+        function createRows(searchItem){
+            const table = document.getElementById("table");
+            let row = table.insertRow(-1);
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            cell0.innerHTML = `<input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">`;
+            cell1.innerHTML = searchItem;
+            cell2.innerHTML = 0; 
+        }
+
+    </script>
+    
+</head>
+
+<body>
+
+    <div class="main-card">
+        <h1>CANS Items - ICD 10 Diagnoses Mapping</h1>
+    </div>
+
+    <div class="search-card">
+        <input id = "search-item" type="text" placeholder="Search">
+        <button id = "submit">Go!</button>
+    </div>
+
+    <table id = "table">
+        <thead>
+            <tr>
+                <th>Add</th>
+                <th>Diagnoses</th>
+                <th>Diagnoses ID</th>
+                </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+
+</html>
