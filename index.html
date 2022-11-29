@@ -10,7 +10,176 @@
         .main-card{background-color: #7A7D7D; width: 100%; display: flex; justify-content: center; align-items: center;}
         .search-card{margin-top: 20px; margin-bottom: 20px; padding: 10px; background-color: #7A7D7D; width: 400px; display: flex; justify-content: center; align-items: center;}
         table {width: 70%; background-color: #7A7D7D; border-collapse: collapse; margin: auto}
-        td, th{border: 2px solid black; padding: 8px; }
+        td, th{border: 2px solid black; <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CANS Items Mapping</title>
+    <style>
+        body {background-color: #D0CFCF; display: flex; flex-direction: column; justify-content: start; align-items: center;}
+        .main-card{background-color: #7A7D7D; width: 100%; display: flex; justify-content: center; align-items: center;}
+        .search-card{margin-top: 20px; margin-bottom: 20px; padding: 10px; background-color: #7A7D7D; width: 400px; display: flex; justify-content: center; align-items: center;}
+        .found-card{width: 75%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        table {width: 70%; background-color: #7A7D7D; border-collapse: collapse; margin: auto; max-height: 200px; display: block; overflow-y: scroll;}
+        th:nth-child(1){width:100px}
+        th:nth-child(2){width: 400px;}
+        th:nth-child(3){width:700px;}
+        td:nth-child(1){width:100px}
+        td:nth-child(2){width: 400px;}
+        td:nth-child(3){width:700px;}
+        td, th{border: 2px solid black; padding: 8px;}
+        td{background-color: #D0CFCF;}
+        button{margin: 5px;}
+        .added-card{width: 75%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+
+    </style>
+    <script>
+        //On load
+        window.onload = () =>{getElements();}
+        //Global Varriables
+        let foundArray = []; 
+        let addedArray = []; 
+        //Event listeners for buttons
+        function getElements(){
+            //search diagnosis button 
+            const searchButton = document.getElementById("submit"); 
+            searchButton.addEventListener('click', search); 
+            //add diagnosis to list
+            const addFoundButton = document.getElementById("add");
+            addFoundButton.addEventListener('click', readyAdd);
+            //enter key
+            const mySearch = document.getElementById("search-item"); 
+            mySearch.addEventListener("keypress", function(event){
+                if(event.key === "Enter"){
+                    event.preventDefault(); 
+                    searchButton.click(); 
+                }
+            })
+            //button for making pdf
+            const pdfButton = document.getElementById("download"); 
+            pdfButton.addEventListener('click', generatePDF)
+        }
+        //searches for the item and adds it to found
+        function search(){
+            const searchBar = document.getElementById("search-item");
+            let searchItem = searchBar.value; 
+            createFoundRows(searchItem); 
+
+        }
+        //adds the row to the found table
+        function createFoundRows(searchItem){
+            const table = document.getElementById("found-table");
+            let row = table.insertRow(-1);
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            cell0.innerHTML = `<input type="checkbox" name= "added" checked>`;
+            cell1.innerHTML = 'id';
+            cell2.innerHTML = searchItem; 
+            foundArray.push([0, 'id', searchItem]); 
+        }
+        //checks if the checkbox is selected, if it is it adds the row to the added table
+        //Resets the foundArray and found table. 
+        function readyAdd(){
+            const table = document.getElementById("found-table");
+            let rowCount = table.rows.length; 
+            for(let i = 1; i < rowCount; i++){
+                let row = table.rows[i]; 
+                let chckb = row.cells[0].getElementsByTagName('input')[0]; 
+                if(chckb.checked == true){
+                    createAddedRows(foundArray[i-1]); 
+                    addedArray[i-1] = foundArray[i-1]
+                }
+            }
+            for(let i = 0; i < foundArray.length; i++){
+                table.deleteRow(1); 
+            }
+            foundArray = []; 
+        }
+        //adds rows to the list table
+        function createAddedRows(rowItem){
+            const tableAdd = document.getElementById("added-table"); 
+            let row = tableAdd.insertRow(-1); 
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            cell0.innerHTML = `<input type="checkbox" class = "checkboxes" name= "added">`;
+            cell1.innerHTML = rowItem[1];
+            cell2.innerHTML = rowItem[2]; 
+        }
+
+        function generatePDF() {
+            let printWindow = window.open('', '', 'height=600,width=1000');
+            const element = document.getElementById('added-table');
+            const cloneElement = element.cloneNode(true)
+            let row = cloneElement.rows; 
+            let j =0; 
+            for(let i =0; i < row.length; i++){
+                row[i].deleteCell(j); 
+            }
+            printWindow.document.write('<html><head><style>');
+                printWindow.document.write('table {width: 70%; border-collapse: collapse; margin: auto;}');
+                printWindow.document.write('td, th{border: 2px solid black; padding: 8px;}');
+            printWindow.document.write('</style></head>')
+            printWindow.document.write('<table>');
+            printWindow.document.write(cloneElement.innerHTML); 
+            printWindow.document.write('</table>');
+            printWindow.document.write('</html>'); 
+            printWindow.print(); 
+        }
+
+    </script>
+    
+</head>
+
+<body>
+
+    <div class="main-card">
+        <h1>CANS Items - ICD 10 Diagnoses Mapping</h1>
+    </div>
+
+    <div class="search-card">
+        <input id = "search-item" type="text" placeholder="Search" onfocus="this.value=''" value="">
+        <button id = "submit">Go!</button>
+    </div>
+
+    <div class="found-card">
+        <h2>Found</h2>
+        <table id = "found-table">
+            <thead>
+                <tr>
+                    <th>Check</th>
+                    <th>ID</th>
+                    <th>Diagnoses</th>
+                </tr>
+            </thead>
+            <tbody id = "table-found-body">
+    
+            </tbody>
+        </table>
+        <button id = "add">Add</button>
+    </div>
+
+    <div id = "added-card" class="added-card">
+        <h2>List</h2>
+        <table id = "added-table">
+            <thead>
+                <tr>
+                    <th>Check</th>
+                    <th>ID</th>
+                    <th>Diagnoses</th>
+                </tr>
+            </thead>
+        </table>
+        <button id = "download">Download List</button>
+        <button id = "remove">Remove From List</button>
+    </div>
+
+</body>
+
+</html>: 8px; }
     </style>
     <script>
         window.onload = () =>{getElements();}
