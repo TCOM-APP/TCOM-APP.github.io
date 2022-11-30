@@ -24,6 +24,7 @@
         td:nth-child(2){width: 400px;}
         td:nth-child(3){width:700px;}
         td, th{border: 2px solid black; padding: 8px;}
+        th, thead{top:0; position: sticky; background-color: #7A7D7D;}
         td{background-color: #D0CFCF;}
         button{margin: 5px;}
         .added-card{width: 75%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
@@ -36,18 +37,22 @@
     <script>
         //On load
         window.onload = () =>{getElements();}
+
         //Global Varriables
         let foundArray = []; 
         let addedArray = []; 
+
         //Event listeners for buttons
         function getElements(){
             //search diagnosis button 
             const searchButton = document.getElementById("submit"); 
             searchButton.addEventListener('click', search); 
+
             //add diagnosis to list
             const addFoundButton = document.getElementById("add");
             addFoundButton.addEventListener('click', readyAdd);
             //enter key
+
             const mySearch = document.getElementById("search-item"); 
             mySearch.addEventListener("keypress", function(event){
                 if(event.key === "Enter"){
@@ -55,12 +60,30 @@
                     searchButton.click(); 
                 }
             })
+
             //button for making pdf
             const pdfButton = document.getElementById("download"); 
-            pdfButton.addEventListener('click', generatePDF)
+            pdfButton.addEventListener('click', generatePDF);
+
             //remove from list button
             const removeButton = document.getElementById("remove");
             removeButton.addEventListener('click', removeFromList);
+
+            //select all button
+            const selectAllButton = document.getElementById("selectAll"); 
+            selectAllButton.addEventListener('click', selectAll); 
+
+            //deselect all button 
+            const deselectAllButton = document.getElementById("deselectAll"); 
+            deselectAllButton.addEventListener('click', deselectAll);
+
+            //select all list button 
+            const selectAllListButton = document.getElementById('selectAllList'); 
+            selectAllListButton.addEventListener('click', selectAllList); 
+
+            //deselect all list button
+            const deselectAllListButton = document.getElementById("deselectAllList"); 
+            deselectAllListButton.addEventListener('click', deselectAllList); 
         }
         //searches for the item and adds it to found
         function search(){
@@ -107,7 +130,7 @@
             let cell0 = row.insertCell(0);
             let cell1 = row.insertCell(1);
             let cell2 = row.insertCell(2);
-            cell0.innerHTML = `<input type="checkbox" class = "checkboxes" name= "added">`;
+            cell0.innerHTML = `<input type="checkbox" name= "listed">`;
             cell1.innerHTML = rowItem[1];
             cell2.innerHTML = rowItem[2]; 
         }
@@ -132,6 +155,7 @@
             printWindow.print(); 
         }
 
+        //Function for removing entries from the list
         function removeFromList(){
             const listTable = document.getElementById("added-table"); 
             let rowCount = listTable.rows.length; 
@@ -141,6 +165,37 @@
                 if(chckb.checked == true){
                     listTable.deleteRow(i); 
                 }
+            }
+        }
+
+        //Select All function 
+        function selectAll(){
+            const checkboxes = document.getElementsByName("added"); 
+            for(let i =0; i < checkboxes.length; i++){
+                checkboxes[i].checked = true; 
+            }
+        }
+        //Deselect All function 
+        function deselectAll(){
+            const checkboxes = document.getElementsByName("added"); 
+            for(let i =0; i < checkboxes.length; i++){
+                checkboxes[i].checked = false; 
+            }
+        }
+
+        //Select All function 
+        function selectAllList(){
+            const checkboxes = document.getElementsByName("listed"); 
+            for(let i =0; i < checkboxes.length; i++){
+                checkboxes[i].checked = true; 
+            }
+        }
+        
+        //Deselect All List function 
+        function deselectAllList(){
+            const checkboxes = document.getElementsByName("listed"); 
+            for(let i =0; i < checkboxes.length; i++){
+                checkboxes[i].checked = false; 
             }
         }
 
@@ -179,7 +234,11 @@
     
             </tbody>
         </table>
-        <button id = "add">Add</button>
+        <div class="buttons">
+            <button id = "selectAll" >Select All</button>
+            <button id = "deselectAll">Deselect All</button>
+            <button id = "add">Add</button>
+        </div>
     </div>
 
     <div id = "added-card" class="added-card">
@@ -194,8 +253,10 @@
             </thead>
         </table>
         <div class="buttons">
+            <button id = "selectAllList">Select All</button>
+            <button id = "deselectAllList">Deselect All</button>
             <button id = "download">Download List</button>
-            <button id = "remove">Remove From List</button>
+            <button id = "remove">Remove Selected</button>
         </div>
 
     </div>
