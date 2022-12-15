@@ -95,8 +95,149 @@
             let searchItem = searchBar.value; 
             searchBar.value = ""; 
             createFoundRows(searchItem); 
-
         }
+
+        //CANS Items   ['item', 'code1', 'diagnosis1', 'code2', 'diagnosis2', ...] code is odd number diagnosis is even
+                    //to lowercase and strip spaces and all non-charecters including / and ()
+
+        const CANSItems = [['psychosis', 'F06.0', 'Psychotic Disorder', 'F06.1', 'Catatonic Disorder', 'F06.2', 'Psychotic Disorder with Delusions', 'F06.7', 'Mild Neurocognitive Disorder',
+                        'F06.8', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'F20', 'Schizophrenia', 'F21', 'Schizotypal Disorder', 'F22', 'Delusional Disorders',
+                        'F23', 'Brief Psychotic Disorder', 'F24', 'Shared Psychotic Disorder', 'F25', 'Schizoaffective Disorders', 'F28', 'Other Psychotic Diorder not due to substance or know physiol. cond.',
+                        'F29', 'Unspecified Psychotic Diorder not due to substance or know physiol. cond.', 'F99', 'Mental disorder, not otherwise specified'],
+
+                        ['impulsivityhyperactivity', 'F30', 'Manic Episode', 'F31', 'Bipolar Disorder', 'F63', 'Impulse Disorders', 'F63.8', 'Other Impulse Disorders (intermittent explosive disorder)',
+                        'F65.9', 'Impulse Disorder, unspecified', 'F90', 'Attention-Deficit Hyperactivity Disorders', 'F90.0', 'ADHD, predominanty inattentive type', 'F90.1', 'ADHD, predominanty hyperactive type',
+                        'F90.2', 'ADHD, combined type', 'F90.8', 'ADHD, other type', 'F90.9', 'ADHD, unspecified type', 'F95.2', 'Tourette\'s disorder', 'F99', 'Mental disorder, not otherwise specified'],
+                    
+                        ['depression', 'F06.3', 'Mood Diorder', 'F30', 'Manic Episode', 'F31', 'Bipolar Disorder', 'F32', 'Depressive Episode', 'F33', 'Major Depressive Disorder, Recurrent', 
+                        'F34', 'Persistent Mood [Affective] Disorders (cyclothymia, dysthymia)', 'F39', 'Unspecified Mood [Affective]Disorder', 'F43', 'Reaction to Severe Stress, and Adjustment Disorders',
+                        'F43.0', 'Acute Stress Reaction', 'F43.1', 'PTSD', 'F43.2', 'Adjustment Disorders (culture shock, grief reaction, hospitalism in childr)', 'F43.8', 'Other reactions to severe stress',
+                        'F43.9', 'Reaction to Severe Stress, unspecified', 'F59', 'Unspecified beh syndroms associated with physiological disturbances  and physical factors', 'F93', 'Emotional disorder with onset specific to childhood', 
+                        'F93.0', 'Separation anxiety disorder of childhood', 'F93.8', 'Other Childhood amotional disorders (gender identity disorder)', 'F93.9', 'Childhood emotional disorder, unspecified', 'F99', 'Mental disorder, not otherwise specified'],
+
+                        ['anxiety', 'F06.4', 'Anxiety Disorder', 'F39', 'Unspecified Mood [Affective]Disorder', 'F40', 'Phobic Anxiety Disorders', 'F40.0', 'Agoraphobia', 'F40.1', 'Social Phobias', 'F40.2', 'Specific Phobias (Animal type, Natural environ, blood/injury, situational)',
+                        'F40.8', 'Other Phobic Anxiety Disorders (childhood)', 'F40.9', 'Phobic Anxiety Disorder, unspecified', 'F41', 'Other Anxiety Disorders', 'F42', 'Obsessive-Compulsive Disorder', 'F43', 'Reaction to Severe Stress, and Adjustment Disorders',
+                        'F43.0', 'Acute Stress Reaction', 'F43.1', 'PTSD', 'F43.2', 'Adjustment Disorders (culture shock, grief reaction, hospitalism in childr)', 'F43.8', 'Other reactions to severe stress', 'F43.9', 'Reaction to Severe Stress, unspecified', 'F45', 'Somatofom Disorders', 
+                        'F50', 'Eating Disorders', 'F59', 'Unspecified beh syndroms associated with physiological disturbances and physical factors', 'F63.3', 'Trichotillomania', 'F93', 'Emotional disorder with onset specific to childhood', 'F93', 'Emotional disorder with onset specific to childhood', 
+                        'F93.0', 'Separation anxiety disorder of childhood', 'F93.8', 'Other Childhood amotional disorders (gender identity disorder)', 'F93.9', 'Childhood emotional disorder, unspecified', 'F99', 'Mental disorder, not otherwise specified'],
+
+                        ['oppositional', 'F91.3', 'Oppositional Definant Disoder'],
+
+                        ['conduct', 'F91', 'Conduct Disorders', 'F91.0', 'Conduct disorder confied to family context', 'F91.1', 'Conduct disorder, childhood-onset type', 'F91.2', 'Conduct disorder, adolescent type', 'F91.8', 'Other conduct disorder', 'F91.9', 'Conduct Disorder, unspecified'],
+
+                        ['angercontrol', 'F63.8', 'Other Impulse Disorders (intermittent explosive disorder)'],
+
+                        ['substanceuse', 'F10', 'Alcohol Related Disorder', 'F11', 'Opiod Related Disorders', 'F12', 'Cannabis Related Disorders', 'F13', 'Sedative Hypnotic or Anxiolytic Disorders', 'F14', 'Cocaine Related Disorders',
+                        'F15', 'Other Stimulant Related Disorders', 'F16', 'Hallucinogen Related Disorders', 'F17', 'Nicotine Dependence', 'F18', 'Inhalent Related Disorders', 'F19', 'Other Psychoative Substance Related Disorders', 'F55', 'Abuse of non-psychoative substances'], 
+
+                        ['adjustmenttotrauma', 'F43', 'Reaction to Severe Stress, and Adjustment Disorders', 'F43.0', 'Acute Stress Reaction', 'F43.1', 'PTSD', 'F43.2', 'Adjustment Disorders (culture shock, grief reaction, hospitalism in childr)', 'F43.8', 'Other reactions to severe stress',
+                        'F43.9', 'Reaction to Severe Stress, unspecified', 'F44', 'Dissociative and Conversion Disorders', 'F45', 'Somatofom Disorders', 'F59', 'Unspecified beh syndroms associated with physiological disturbances and physical factors', 'F94.1',  'Reactive Attachment Disorder of Childhood',
+                        'F94.2', 'Disinhibited Attachment Disorder of Childhood', 'F98.1', 'Encopresis not due to a substance or known physiolgical condition', 'Z62.2', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Z63.7', 'Other stressful life events affecting family and household',
+                        'Z63.71', 'Stress on family due to return of family member from military deplymt'],
+
+                        ['familyfunctioning', 'F91.0', 'Conduct disorder confied to family context', 'Z62', 'Probems related to upbringing', 'Z62.3', 'Hostility towards and scapegoating of child', 'Z62.6', 'Inappropriate (excessive) parental pressure', 'Z62.8', 'Other Specified problems reated to upbringing', 
+                        'Z62.820', 'Parent-biological child conflict', 'Z62.821', 'Parent-adopted child conflict', 'Z62.822', 'Parent-foster child conflict', 'Z62.89', 'Other specified problems related to upbringing', 'Z62.891', 'Sibling Rivary', 'Z62.898', 'Other specified problems related to upbringing',
+                        'Z62.9', 'Problem reated to upbringing, unspecified', 'Z63.0', 'Problems in relationship with spouse or partner', 'Z63.1', 'Problems in relationship with in-laws', 'Z63.7', 'Other stressful life events affecting family and household', 'Z63.71', 'Stress on family due to return of family member from military deplymt'],
+
+                        ['livingsituation', 'Z62', 'Probems related to upbringing', 'Z62.2', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Z62.3', 'Hostility towards and scapegoating of child', 'Z62.6', 'Inappropriate (excessive) parental pressure', 'Z62.8', 'Other Specified problems reated to upbringing', 
+                        'Z62.820', 'Parent-biological child conflict', 'Z62.821', 'Parent-adopted child conflict', 'Z62.822', 'Parent-foster child conflict', 'Z62.89', 'Other specified problems related to upbringing', 'Z62.898', 'Other specified problems related to upbringing', 'Z62.9', 'Problem reated to upbringing, unspecified', 
+                        'Z63.1', 'Problems in relationship with in-laws', 'Z63.6', 'Dependent relative needing care at home', 'Z63.7', 'Other stressful life events affecting family and household', 'Z63.71', 'Stress on family due to return of family member from military deplymt'],
+
+                        ['socialfunctioning', 'F07', 'Personality and Beh Disorders', 'F94', 'Disorder of social functioning with onset specific to childhood/adolescence', 'F94.8', 'Other childhood disorders of social functioning', 'F94.9', 'Childhood disorder of social functioning, unspecified',
+                        'Z55.4', 'Educational maladjustment and disord with teachers/classmates', 'Z60.4', 'Social exclusion and rejection', 'Z60.5', 'Target of (perceived) adverse discrimination and persecution', 'Z60.8', 'Other problems reated to social environment', 'Z60.9', 'Problem related to social environment, unspecified'], 
+
+                        ['developmentalintellectual', 'F70', 'Mild Intellectual Disabilities', 'F71', 'Moderate Intellectual Disabilities', 'F72', 'Severe Intellectual Disabilities', 'F73', 'Profound Intellectual Disabilities', 'F78', 'Other Intellectual Disabilities', 'F79', 'Unspecified Intellectual Disabilities', 
+                        'F80', 'Specific Developmental Disorder of Speech and Language', 'F81', 'Specific Developmental Disorders of Scholastic Skills', 'F82', 'Specific Developmental Disorders of Motor Function', 'F84', 'Pervasive Developmental Disorders', 'F84.0', 'Autistic Disorder', 'F84.2', 'Rhett\'s Syndrome', 
+                        'F84.3', 'Other Childhood Disintegrative Disorder', 'F84.5', 'Asperger\'s Syndrome', 'F84.8', 'Other Pervasive Developmental Disorders', 'F84.9', 'Pervasive Developmental Disorders, unspecified', 'F95.2', 'Tourette\'s disorder', 'F98.0', 'Enuresis not due to a subtance or known physiological condition', 
+                        'F98.4', 'Stereotyped movement disorders'], 
+
+                        ['decisionmaking', 'F70', 'Mild Intellectual Disabilities', 'F71', 'Moderate Intellectual Disabilities', 'F72', 'Severe Intellectual Disabilities', 'F73', 'Profound Intellectual Disabilities', 'F78', 'Other Intellectual Disabilities', 'F79', 'Unspecified Intellectual Disabilities', 
+                        'F80', 'Specific Developmental Disorder of Speech and Language', 'F81', 'Specific Developmental Disorders of Scholastic Skills', 'F82', 'Specific Developmental Disorders of Motor Function', 'F84', 'Pervasive Developmental Disorders', 'F84.0', 'Autistic Disorder', 'F84.2', 'Rhett\'s Syndrome', 
+                        'F84.3', 'Other Childhood Disintegrative Disorder', 'F84.5', 'Asperger\'s Syndrome', 'F84.8', 'Other Pervasive Developmental Disorders', 'F84.9', 'Pervasive Developmental Disorders, unspecified', 'F95.2', 'Tourette\'s disorder', 'F98.0', 'Enuresis not due to a subtance or known physiological condition', 
+                        'F90', 'Attention-Deficit Hyperactivity Disorders', 'F90.0', 'ADHD, predominanty inattentive type', 'F90.1', 'ADHD, predominanty hyperactive type', 'F90.2', 'ADHD, combined type', 'F90.8', 'ADHD, other type', 'F90.9', 'ADHD, unspecified type', 'F91', 'Conduct Disorders', 'F91.0', 'Conduct disorder confied to family context',
+                        'F91.1', 'Conduct disorder, childhood-onset type', 'F91.2', 'Conduct disorder, adolescent type', 'F91.3', 'Oppositional Definant Disoder', 'F91.8', 'Other conduct disorder', 'F91.9', 'Conduct Disorder, unspecified'],
+
+                        ['schoolbehavior', 'Z55', 'Problems related to education and literacy', 'Z55.4', 'Educational maladjustment and disord with teachers/classmates', 'Z55.9', 'Problems related to education and literacy, unspecified'],
+
+                        ['schoolachievement', 'Z55', 'Problems related to education and literacy', 'Z55.0', 'Illiteracy and low-level literacy', 'Z55.1', 'Schooling unavailable and unattainable', 'Z55.2', 'Failed school examinations', 'Z55.3', 'Underachievement in school', 'Z55.5', 'Less than a high school diploma', 
+                        'Z55.8', 'Other problems related to education and literacy (inadequte teaching)', 'Z55.9', 'Problems related to education and literacy, unspecified'],
+
+                        ['schoolattendance', 'Z55', 'Problems related to education and literacy', 'Z55.9', 'Problems related to education and literacy, unspecified'],
+
+                        ['medicalphysical', 'F06.8', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'F45', 'Somatofom Disorders', 'F59', 'Unspecified beh syndroms associated with physiological disturbances  and physical factors', 'F95', 'Tic Disorder', 'F95.0', 'Transient Tic Disorder', 'F95.1', 'Chronic motor or vocal tic disorder', 'F95.2', 'Tourette\'s disorder', 
+                        'F95.8', 'Other tic disorders', 'F95.9', 'Tid disorder, unspecified'],
+
+                        ['sexualdevelopment', 'F52', 'Sexual Dysfunction not due to a substance or known physiological condition', 'F64', 'Gender Identity Disorders', 'F65', 'Paraphilias'],
+
+                        ['sleep', 'F51', 'Sleep Disorders not due to a substance or known physiological condition'],
+
+                        ['suiciderisk', 'F06.3', 'Mood Diorder', 'F06.4', 'Anxiety Disorder', 'F32', 'Depressive Episode', 'F33', 'Major Depressive Disorder, Recurrent'], 
+
+                        ['nonsuicidalselfinjuriousbehavior', 'F06.4', 'Anxiety Disorder', 'F34', 'Persistent Mood [Affective] Disorders (cyclothymia, dysthymia)', 'F39', 'Unspecified Mood [Affective]Disorder'],
+
+                        ['otherselfharmrecklessness', 'F06.0', 'Psychotic Disorder', 'F10', 'Alcohol Related Disorder', 'F11', 'Opiod Related Disorders', 'F12', 'Cannabis Related Disorders', 'F13', 'Sedative Hypnotic or Anxiolytic Disorders', 'F14', 'Cocaine Related Disorders', 'F15', 'Other Stimulant Related Disorders', 'F16', 'Hallucinogen Related Disorders',
+                        'F17', 'Nicotine Dependence', 'F18', 'Inhalent Related Disorders', 'F19', 'Other Psychoative Substance Related Disorders', 'F32', 'Depressive Episode', 'F63.0', 'Pathological Gambling', 'F63.3', 'Trichotillomania'], 
+
+                        ['dangertoothers', 'F06.2', 'Psychotic Disorder with Delusions', 'F63.1', 'Pyromania', 'F91', 'Conduct Disorders'], 
+
+                        ['sexualaggression', 'F91', 'Conduct Disorders', 'F91.3', 'Oppositional Definant Disoder'], 
+
+                        ['delinquentbehavior', 'F63.2', 'Keptomania', 'F91', 'Conduct Disorders', 'F91.1', 'Conduct disorder, childhood-onset type', 'F91.2', 'Conduct disorder, adolescent type', 'F91.8', 'Other conduct disorder', 'F91.9', 'Conduct Disorder, unspecified', 'Z65.0', 'Conviction in civil and criminal proceedings without imprisonment', 'Z65.1', 'Imprisonment and other incarceration',
+                        'Z65.2', 'Problems related to release from prison', 'Z65.3', 'Problems realted to other legal circumstances'], 
+
+                        ['runaway', 'F91', 'Conduct Disorders', 'F91.0', 'Conduct disorder confied to family context', 'F91.1', 'Conduct disorder, childhood-onset type', 'F91.2', 'Conduct disorder, adolescent type', 'F91.3', 'Oppositional Definant Disoder', 'F91.8', 'Other conduct disorder', 'F91.9', 'Conduct Disorder, unspecified', 'F93.8', 'Other Childhood amotional disorders (gender identity disorder)', 
+                        'Z62.810', 'Personal hx of physical and sexual abuse in childhood', 'Z62.811', 'Personal hx of psychological abuse in childhood', 'Z62.812', 'Personal hx of neglect in childhood', 'Z62.813', 'Personal hx of foced labor or sexual exploitation in childhood', 'Z62.814', 'Personal hx of unspecified abuse in childhood'], 
+
+                        ['intentionalmisbehavior', 'F91.1', 'Conduct disorder, childhood-onset type', 'F91.2', 'Conduct disorder, adolescent type', 'F91.3', 'Oppositional Definant Disoder', 'F91.8', 'Other conduct disorder', 'F91.9', 'Conduct Disorder, unspecified', 'F94.0', 'Selective mutism'], 
+
+                        ['language', 'Z60.3', 'Acculturaltion Difficulty', 'Z60.4', 'Social exclusion and rejection', 'Z60.5', 'Target of (perceived) adverse discrimination and persecution'], 
+
+                        ['traditionsandrituals', 'Z60.3', 'Acculturaltion Difficulty', 'Z60.4', 'Social exclusion and rejection', 'Z60.5', 'Target of (perceived) adverse discrimination and persecution'], 
+
+                        ['culturalstress', 'Z60.3', 'Acculturaltion Difficulty', 'Z60.4', 'Social exclusion and rejection', 'Z60.5', 'Target of (perceived) adverse discrimination and persecution'], 
+
+                        ['familystrengths', 'Z62.820', 'Parent-biological child conflict', 'Z62.821', 'Parent-adopted child conflict', 'Z62.822', 'Parent-foster child conflict', 'Z62.89', 'Other specified problems related to upbringing', 'Z62.890', 'Parent-child estrangement NEC', 'Z62.891', 'Sibling Rivary', 'Z62.9', 'Problem reated to upbringing, unspecified', 'Z63.0', 'Problems in relationship with spouse or partner',
+                        'Z63.1', 'Problems in relationship with in-laws'], 
+
+                        ['interpersonal', 'F94', 'Disorder of social functioning with onset specific to childhood/adolescence', 'F94.8', 'Other childhood disorders of social functioning', 'F94.9', 'Childhood disorder of social functioning, unspecified', 'Z55.4', 'Educational maladjustment and disord with teachers/classmates', 'Z60.4', 'Social exclusion and rejection', 'Z60.5', 'Target of (perceived) adverse discrimination and persecution',
+                        'Z60.8', 'Other problems reated to social environment', 'Z60.9', 'Problem related to social environment, unspecified'], 
+
+                        ['educationalsetting', 'Z55.1', 'Schooling unavailable and unattainable', 'Z55.3', 'Underachievement in school', 'Z55.8', 'Other problems related to education and literacy (inadequte teaching)'], 
+
+                        ['talentsandinterests', 'Z60.8', 'Other problems reated to social environment', 'Z60.9', 'Problem related to social environment, unspecified'], 
+
+                        ['spiritualreligious', 'Z60.3', 'Acculturaltion Difficulty'], 
+
+                        ['culturalidentity', 'F64', 'Gender Identity Disorders'], 
+
+                        ['communitylife', 'Z60', 'Problems reatled to social environment', 'Z65.2', 'Problems related to release from prison'], 
+
+                        ['naturalsupports', 'Z63.8', 'Other specified problems reatled to primary support group', 'Z63.9', 'Oproblem related to primary support group, unspecified'], 
+
+                        ['resiliency', 'F93.9', 'Childhood emotional disorder, unspecified', 'F94.9', 'Childhood disorder of social functioning, unspecified'], 
+
+                        ['supervision', 'Z62.0', 'Inadequate parental supervision and control', 'Z62.1', 'Parental overprotection', 'Z62.3', 'Hostility towards and scapegoating of child'], 
+
+                        ['involvementwithcare', 'Z62.8', 'Other Specified problems reated to upbringing', 'Z62.890', 'Parent-child estrangement NEC'], 
+
+                        ['knowledge', 'Z62.2', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Z62.3', 'Hostility towards and scapegoating of child', 'Z62.6', 'Inappropriate (excessive) parental pressure', 'Z62.891', 'Sibling Rivary'], 
+
+                        ['socialresources', 'Z59.2', 'Discord with neighbors, lodgers and langlord', 'Z63.8', 'Other specified problems reatled to primary support group', 'Z63.9', 'Other problems related to primary support group, unspecified'], 
+
+                        ['residentialstability', 'Z59', 'Problems reatled to houseing and economic circumstances', 'Z59.0', 'Homelessness', 'Z59.1', 'Inadequte housing', 'Z59.3', 'Problems related to living in residential institution', 'Z59.8', 'Other problems reatled to housing and economic circumstances', 'Z59.9', 'Problem reated to house and economic cirucmstances, unspecified'], 
+
+                        ['medicalphysicalcaregiver', 'Z63.79', 'Other stressful life events affecting family and household'], 
+
+                        ['mentalhealthcaregiver', 'F53', 'Mental/Beh Disorders assc with peurperium', 'F53.0', 'Postpartum Depression', 'F53.1', 'Puerperal Psychosis', 'Z59.2', 'Discord with neighbors, lodgers and langlord'], 
+
+                        ['substanceusecaregiver', 'Z63.72', 'Alcoholism and drug addiction in family'], 
+
+                        ['developmentalcaregiver', 'Z63.79', 'Other stressful life events affecting family and household'], 
+
+                        ['safety', 'Z58', 'Problems reated to physical environment', 'Z58.6', 'Inadequte drinking-water supply']
+                        
+                    ]
+        
         //adds the row to the found table
         function createFoundRows(searchItem){
             const table = document.getElementById("found-table");
@@ -174,10 +315,19 @@
 
         //Select All function 
         function selectAll(){
+            for(let i = 0; i < CANSItems.length; i++){
+                for(let j = 1; j < CANSItems[i].length; j++){
+                    if(j%2 == 1){
+                        console.log(CANSItems[i][j]); 
+                    }
+                } 
+            }
+            /*
             const checkboxes = document.getElementsByName("added"); 
             for(let i =0; i < checkboxes.length; i++){
                 checkboxes[i].checked = true; 
             }
+            */
         }
         //Deselect All function 
         function deselectAll(){
