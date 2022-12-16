@@ -46,61 +46,13 @@
         let foundArray = []; 
         let addedArray = []; 
 
-        //Event listeners for buttons
-        function getElements(){
-            //search diagnosis button 
-            const searchButton = document.getElementById("submit"); 
-            searchButton.addEventListener('click', search); 
-
-            //add diagnosis to list
-            const addFoundButton = document.getElementById("add");
-            addFoundButton.addEventListener('click', readyAdd);
-            //enter key
-
-            const mySearch = document.getElementById("search-item"); 
-            mySearch.addEventListener("keypress", function(event){
-                if(event.key === "Enter"){
-                    event.preventDefault(); 
-                    searchButton.click(); 
-                }
-            })
-
-            //button for making pdf
-            const pdfButton = document.getElementById("download"); 
-            pdfButton.addEventListener('click', generatePDF);
-
-            //remove from list button
-            const removeButton = document.getElementById("remove");
-            removeButton.addEventListener('click', removeFromList);
-
-            //select all button
-            const selectAllButton = document.getElementById("selectAll"); 
-            selectAllButton.addEventListener('click', selectAll); 
-
-            //deselect all button 
-            const deselectAllButton = document.getElementById("deselectAll"); 
-            deselectAllButton.addEventListener('click', deselectAll);
-
-            //select all list button 
-            const selectAllListButton = document.getElementById('selectAllList'); 
-            selectAllListButton.addEventListener('click', selectAllList); 
-
-            //deselect all list button
-            const deselectAllListButton = document.getElementById("deselectAllList"); 
-            deselectAllListButton.addEventListener('click', deselectAllList); 
-        }
-        //searches for the item and adds it to found
-        function search(){
-            const searchBar = document.getElementById("search-item");
-            let searchItem = searchBar.value; 
-            searchBar.value = ""; 
-            createFoundRows(searchItem); 
-        }
-
-        //CANS Items   ['item', 'code1', 'diagnosis1', 'code2', 'diagnosis2', ...] code is odd number diagnosis is even
-                    //to lowercase and strip spaces and all non-charecters including / and ()
-
-        const CANSItems = [['psychosis', 'F06.0', 'Psychotic Disorder', 'F06.1', 'Catatonic Disorder', 'F06.2', 'Psychotic Disorder with Delusions', 'F06.7', 'Mild Neurocognitive Disorder',
+        const CANSItems = ['Psychosis', 'Impulsivity Hyperactivity', 'Depression', 'Anxiety', 'Oppositional', 'Conduct', 'Anger Control', 'Substance Use', 'Adjustment to Trauma', 'Family Functioning', 'Living Situation', 'Social Functioning', 'Developmental/Intellectual', 'Decision Making',
+                        'School Behavior', 'School Achievement', 'School Attendance', 'Medical/Physical', 'Sexual Development', 'Sleep', 'Suicide Risk', 'Non-Suicidal-Self-Injurious behavior', 'Other Self Harm (Recklessness)', 'Danger to Others', 'Sexual Aggression', 'Delinquent Behavior',
+                        'Runaway', 'Intentional Misbehavior', 'Language', 'Traditions and Rituals', 'Cultural Stress', 'Family Strengths', 'Interpersonal', 'Educational Setting', 'Talents and Interests', 'Spiritual/Religious', 'Cultural Identity', 'Community Life', 'Natural Supports', 
+                        'Resiliency', 'Supervision (Care Giver)', 'Involvement with Care (Care Giver)', 'Knowledge (Care Giver)', 'Social Resources (Care Giver)', 'Residential Stability (Care Giver)', 'Medical/Physical (Care Giver)', 'Mental Health (Care Giver)', 'Substance Use (Care Giver)', 'Developmental (Caregiver)',
+                        'Saftey (Care Giver)'];
+        
+        const CANSDiag = [['psychosis', 'F06.0', 'Psychotic Disorder', 'F06.1', 'Catatonic Disorder', 'F06.2', 'Psychotic Disorder with Delusions', 'F06.7', 'Mild Neurocognitive Disorder',
                         'F06.8', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'F20', 'Schizophrenia', 'F21', 'Schizotypal Disorder', 'F22', 'Delusional Disorders',
                         'F23', 'Brief Psychotic Disorder', 'F24', 'Shared Psychotic Disorder', 'F25', 'Schizoaffective Disorders', 'F28', 'Other Psychotic Diorder not due to substance or know physiol. cond.',
                         'F29', 'Unspecified Psychotic Diorder not due to substance or know physiol. cond.', 'F99', 'Mental disorder, not otherwise specified'],
@@ -237,18 +189,115 @@
                         ['safety', 'Z58', 'Problems reated to physical environment', 'Z58.6', 'Inadequte drinking-water supply']
                         
                     ]
+
+        //Event listeners for buttons
+        function getElements(){
+            //search diagnosis button 
+            const searchButton = document.getElementById("submit"); 
+            searchButton.addEventListener('click', search); 
+
+            //add diagnosis to list
+            const addFoundButton = document.getElementById("add");
+            addFoundButton.addEventListener('click', readyAdd);
+
+            const mySearch = document.getElementById("search-item"); 
+            mySearch.addEventListener("keypress", function(event){
+                if(event.key === "Enter"){
+                    event.preventDefault(); 
+                    searchButton.click(); 
+                }
+            });
+            /*
+            mySearch.addEventListener("keypress", function(event){
+                let a, b, i, val = this.value; 
+                closeAllLists(); 
+                if(!val){
+                    return false; 
+                }
+                a = document.createElement('DIV'); 
+                a.setAttribute("id", this.id + "autocomplete-list"); 
+                a.setAttribute("class", "autocomplete-item"); 
+                this.parentNode.appendChild(a); 
+
+                for(i = 0; i < CANSItems.length; i++){
+                    if(CANSItems[i].substr(0,val.length).toUpperCase() == val.toUpperCase()){
+                        b = document.createElement("DIV"); 
+                        b.innerHTML= "<strong>" + CANSItems[i].substr(0, val.length) + "</strong>"; 
+                        b.innerHTML += CANSItems[i].substr(val.length); 
+                        b.innerHTML += "<input type='hidden' value='" + CANSItems[i] + "'>";
+
+                        b.addEventListener("click", function(e){
+                            console.log(this.getElementsByTagName("input")[0].value); 
+                            closeAllLists()
+                        });
+                        a.appendChild(b); 
+                    }
+                }
+                function closeAllLists(){
+                    let x = document.getElementsByClassName("autocomplete-items"); 
+                    for(let i = 0; i < x.length; i++){
+                        x[i].parentNode.removeChild(x[i]); 
+                    }
+                }
+            });
+            */
+
+            //button for making pdf
+            const pdfButton = document.getElementById("download"); 
+            pdfButton.addEventListener('click', generatePDF);
+
+            //remove from list button
+            const removeButton = document.getElementById("remove");
+            removeButton.addEventListener('click', removeFromList);
+
+            //select all button
+            const selectAllButton = document.getElementById("selectAll"); 
+            selectAllButton.addEventListener('click', selectAll); 
+
+            //deselect all button 
+            const deselectAllButton = document.getElementById("deselectAll"); 
+            deselectAllButton.addEventListener('click', deselectAll);
+
+            //select all list button 
+            const selectAllListButton = document.getElementById('selectAllList'); 
+            selectAllListButton.addEventListener('click', selectAllList); 
+
+            //deselect all list button
+            const deselectAllListButton = document.getElementById("deselectAllList"); 
+            deselectAllListButton.addEventListener('click', deselectAllList); 
+        }
+
+        //searches for the item and adds it to found
+        function search(){
+            const searchBar = document.getElementById("search-item");
+            let searchItem = searchBar.value; 
+            searchBar.value = ""; 
+            const regex = /[^A-Za-z]/g;
+            searchItem = searchItem.replace(regex, '');
+            searchItem = searchItem.toLowerCase(); 
+            for(let i = 0; i < CANSDiag.length; i++){
+                if(CANSDiag[i][0] == searchItem){
+                    createFoundRows(CANSDiag[i]); 
+                }
+            }
+        }
         
         //adds the row to the found table
         function createFoundRows(searchItem){
             const table = document.getElementById("found-table");
-            let row = table.insertRow(-1);
-            let cell0 = row.insertCell(0);
-            let cell1 = row.insertCell(1);
-            let cell2 = row.insertCell(2);
-            cell0.innerHTML = `<input type="checkbox" name= "added" checked>`;
-            cell1.innerHTML = 'id';
-            cell2.innerHTML = searchItem; 
-            foundArray.push([0, 'id', searchItem]); 
+            for(let i = 1; i < searchItem.length; i +=2 ){
+                if(!foundArray.includes(searchItem[i])){
+                    let row = table.insertRow(-1);
+                    let cell0 = row.insertCell(0);
+                    let cell1 = row.insertCell(1);
+                    let cell2 = row.insertCell(2);
+                    cell0.innerHTML = `<input type="checkbox" name= "added" checked>`;
+                    cell1.innerHTML = searchItem[i];
+                    cell2.innerHTML = searchItem[i+1]; 
+                    foundArray.push(searchItem[i]);
+                    foundArray.push(searchItem[i+1]);
+                }
+            }
         }
         //checks if the checkbox is selected, if it is it adds the row to the added table
         //Resets the foundArray and found table. 
@@ -259,25 +308,27 @@
                 let row = table.rows[i]; 
                 let chckb = row.cells[0].getElementsByTagName('input')[0]; 
                 if(chckb.checked == true){
-                    createAddedRows(foundArray[i-1]); 
-                    addedArray[i-1] = foundArray[i-1]
+                    if(!addedArray.includes(row.cells.innerHTML)){
+                        createAddedRows(row.cells[1].innerHTML, row.cells[2].innerHTML); 
+                        addedArray.push(row.cells[1].innerHTML);
+                    }
+ 
                 }
             }
-            for(let i = 0; i < foundArray.length; i++){
+            for(let i = 0; i < rowCount -1; i+=1){
                 table.deleteRow(1); 
             }
-            foundArray = []; 
         }
         //adds rows to the list table
-        function createAddedRows(rowItem){
+        function createAddedRows(rowItem1, rowItem2){
             const tableAdd = document.getElementById("added-table"); 
             let row = tableAdd.insertRow(-1); 
             let cell0 = row.insertCell(0);
             let cell1 = row.insertCell(1);
             let cell2 = row.insertCell(2);
             cell0.innerHTML = `<input type="checkbox" name= "listed">`;
-            cell1.innerHTML = rowItem[1];
-            cell2.innerHTML = rowItem[2]; 
+            cell1.innerHTML = rowItem1;
+            cell2.innerHTML = rowItem2; 
         }
 
         function generatePDF() {
@@ -290,8 +341,8 @@
                 row[i].deleteCell(j); 
             }
             printWindow.document.write('<html><head><style>');
-                printWindow.document.write('table {width: 70%; border-collapse: collapse; margin: auto;}');
-                printWindow.document.write('td, th{border: 2px solid black; padding: 8px;}');
+            printWindow.document.write('table {width: 70%; border-collapse: collapse; margin: auto;}');
+            printWindow.document.write('td, th{border: 2px solid black; padding: 8px;}');
             printWindow.document.write('</style></head>')
             printWindow.document.write('<table>');
             printWindow.document.write(cloneElement.innerHTML); 
@@ -308,6 +359,9 @@
                 let row = listTable.rows[i]; 
                 let chckb = row.cells[0].getElementsByTagName('input')[0]; 
                 if(chckb.checked == true){
+                    let index = addedArray.indexOf(row.cells[1].innerHTML);
+                    addedArray.splice(index, 1); 
+                    console.log(addedArray)
                     listTable.deleteRow(i); 
                 }
             }
@@ -315,20 +369,12 @@
 
         //Select All function 
         function selectAll(){
-            for(let i = 0; i < CANSItems.length; i++){
-                for(let j = 1; j < CANSItems[i].length; j++){
-                    if(j%2 == 1){
-                        console.log(CANSItems[i][j]); 
-                    }
-                } 
-            }
-            /*
             const checkboxes = document.getElementsByName("added"); 
             for(let i =0; i < checkboxes.length; i++){
                 checkboxes[i].checked = true; 
             }
-            */
         }
+
         //Deselect All function 
         function deselectAll(){
             const checkboxes = document.getElementsByName("added"); 
@@ -371,7 +417,9 @@
     </header>
     <h3>Enter the CANS 50 Item below</h3>
     <div class="search-card">
-        <input id = "search-item" type="text" placeholder="Search" onfocus="this.value=''" value="">
+        <div class="autocomplete">
+            <input id = "search-item" type="text" placeholder="Search" onfocus="this.value=''" value=""></input>
+        </div>
         <button id = "submit">Search!</button>
     </div>
 
