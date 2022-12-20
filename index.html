@@ -16,11 +16,11 @@
         .title{color: white; background-color: black; width: 100%; height: 70px; display: flex; justify-content: center; align-items: center; border: #D0CFCF 2px solid;}
         h3{margin-top: 30px; margin-bottom: 10px;}
         h2{margin-bottom: 10px;}
-        #search-item{border: 1px solid black}
+        #search-item{margin-top: 10px; border: 2px solid black}
         p{margin: 0px; font-size:medium;}
-        .search-card{border: 2px solid black; margin-bottom: 20px; padding: 10px; background-color: #7A7D7D; width: 400px; display: flex; justify-content: center; align-items: center;}
+        .search-card{border: 2px solid black; margin-bottom: 20px; padding: 10px; background-color: #7A7D7D; width: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;}
         .found-card{width: 75%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 50px;}
-        table {width: 70%; background-color: #7A7D7D; border-collapse: collapse; margin: auto; max-height: 200px; display: block; overflow-y: scroll;}
+        table {width: 70%; background-color: #7A7D7D; border-collapse: collapse; margin: auto;}
         th:nth-child(1){width:100px}
         th:nth-child(2){width: 200px;}
         th:nth-child(3){width:700px;}
@@ -32,6 +32,9 @@
         td{background-color: #D0CFCF;}
         button{margin: 5px;}
         .added-card{width: 75%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        .autocomplete-item{background-color: white; border: 2px solid black;}
+        .autocomplete-item:hover{background-color: grey; cursor: pointer}
+        ul{list-style-type: none; margin-top: 5px;}
     </style>
 <!------------------------------------------------------------------------------------------------------------------------------------------>
 
@@ -50,7 +53,7 @@
                         'School Behavior', 'School Achievement', 'School Attendance', 'Medical/Physical', 'Sexual Development', 'Sleep', 'Suicide Risk', 'Non-Suicidal-Self-Injurious behavior', 'Other Self Harm (Recklessness)', 'Danger to Others', 'Sexual Aggression', 'Delinquent Behavior',
                         'Runaway', 'Intentional Misbehavior', 'Language', 'Traditions and Rituals', 'Cultural Stress', 'Family Strengths', 'Interpersonal', 'Educational Setting', 'Talents and Interests', 'Spiritual/Religious', 'Cultural Identity', 'Community Life', 'Natural Supports', 
                         'Resiliency', 'Supervision (Care Giver)', 'Involvement with Care (Care Giver)', 'Knowledge (Care Giver)', 'Social Resources (Care Giver)', 'Residential Stability (Care Giver)', 'Medical/Physical (Care Giver)', 'Mental Health (Care Giver)', 'Substance Use (Care Giver)', 'Developmental (Caregiver)',
-                        'Saftey (Care Giver)'];
+                        'Safety (Care Giver)'];
         
         const CANSDiag = [['psychosis', 'F06.0', 'Psychotic Disorder', 'F06.1', 'Catatonic Disorder', 'F06.2', 'Psychotic Disorder with Delusions', 'F06.7', 'Mild Neurocognitive Disorder',
                         'F06.8', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'F20', 'Schizophrenia', 'F21', 'Schizotypal Disorder', 'F22', 'Delusional Disorders',
@@ -168,15 +171,15 @@
 
                         ['resiliency', 'F93.9', 'Childhood emotional disorder, unspecified', 'F94.9', 'Childhood disorder of social functioning, unspecified'], 
 
-                        ['supervision', 'Z62.0', 'Inadequate parental supervision and control', 'Z62.1', 'Parental overprotection', 'Z62.3', 'Hostility towards and scapegoating of child'], 
+                        ['supervisioncaregiver', 'Z62.0', 'Inadequate parental supervision and control', 'Z62.1', 'Parental overprotection', 'Z62.3', 'Hostility towards and scapegoating of child'], 
 
-                        ['involvementwithcare', 'Z62.8', 'Other Specified problems reated to upbringing', 'Z62.890', 'Parent-child estrangement NEC'], 
+                        ['involvementwithcarecaregiver', 'Z62.8', 'Other Specified problems reated to upbringing', 'Z62.890', 'Parent-child estrangement NEC'], 
 
-                        ['knowledge', 'Z62.2', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Z62.3', 'Hostility towards and scapegoating of child', 'Z62.6', 'Inappropriate (excessive) parental pressure', 'Z62.891', 'Sibling Rivary'], 
+                        ['knowledgecaregiver', 'Z62.2', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Z62.3', 'Hostility towards and scapegoating of child', 'Z62.6', 'Inappropriate (excessive) parental pressure', 'Z62.891', 'Sibling Rivary'], 
 
-                        ['socialresources', 'Z59.2', 'Discord with neighbors, lodgers and langlord', 'Z63.8', 'Other specified problems reatled to primary support group', 'Z63.9', 'Other problems related to primary support group, unspecified'], 
+                        ['socialresourcescaregiver', 'Z59.2', 'Discord with neighbors, lodgers and langlord', 'Z63.8', 'Other specified problems reatled to primary support group', 'Z63.9', 'Other problems related to primary support group, unspecified'], 
 
-                        ['residentialstability', 'Z59', 'Problems reatled to houseing and economic circumstances', 'Z59.0', 'Homelessness', 'Z59.1', 'Inadequte housing', 'Z59.3', 'Problems related to living in residential institution', 'Z59.8', 'Other problems reatled to housing and economic circumstances', 'Z59.9', 'Problem reated to house and economic cirucmstances, unspecified'], 
+                        ['residentialstabilitycaregiver', 'Z59', 'Problems reatled to houseing and economic circumstances', 'Z59.0', 'Homelessness', 'Z59.1', 'Inadequte housing', 'Z59.3', 'Problems related to living in residential institution', 'Z59.8', 'Other problems reatled to housing and economic circumstances', 'Z59.9', 'Problem reated to house and economic cirucmstances, unspecified'], 
 
                         ['medicalphysicalcaregiver', 'Z63.79', 'Other stressful life events affecting family and household'], 
 
@@ -186,61 +189,66 @@
 
                         ['developmentalcaregiver', 'Z63.79', 'Other stressful life events affecting family and household'], 
 
-                        ['safety', 'Z58', 'Problems reated to physical environment', 'Z58.6', 'Inadequte drinking-water supply']
+                        ['safetycaregiver', 'Z58', 'Problems reated to physical environment', 'Z58.6', 'Inadequte drinking-water supply']
                         
-                    ]
+                    ];
+        
 
         //Event listeners for buttons
         function getElements(){
             //search diagnosis button 
             const searchButton = document.getElementById("submit"); 
-            searchButton.addEventListener('click', search); 
+            searchButton.addEventListener('click', function(e){
+                const searchBar = document.getElementById("search-item"); 
+                search(searchBar.value); 
+                searchBar.value = ""; 
+                closeAllLists(); 
+            }); 
 
             //add diagnosis to list
             const addFoundButton = document.getElementById("add");
             addFoundButton.addEventListener('click', readyAdd);
 
-            const mySearch = document.getElementById("search-item"); 
-            mySearch.addEventListener("keypress", function(event){
+            document.addEventListener('keypress', function(event){
                 if(event.key === "Enter"){
                     event.preventDefault(); 
                     searchButton.click(); 
                 }
-            });
-            /*
-            mySearch.addEventListener("keypress", function(event){
-                let a, b, i, val = this.value; 
+            })
+
+            const mySearch = document.getElementById("search-item"); 
+            mySearch.addEventListener("input", function(event){
+                const searchBar = document.getElementById("search-item");
+                const auto = document.getElementById("auto-list"); 
                 closeAllLists(); 
-                if(!val){
-                    return false; 
+                const searchButton = document.getElementById("submit"); 
+                if(event.key === "Enter"){
+                    event.preventDefault(); 
+                    searchButton.click(); 
                 }
-                a = document.createElement('DIV'); 
-                a.setAttribute("id", this.id + "autocomplete-list"); 
-                a.setAttribute("class", "autocomplete-item"); 
-                this.parentNode.appendChild(a); 
-
-                for(i = 0; i < CANSItems.length; i++){
-                    if(CANSItems[i].substr(0,val.length).toUpperCase() == val.toUpperCase()){
-                        b = document.createElement("DIV"); 
-                        b.innerHTML= "<strong>" + CANSItems[i].substr(0, val.length) + "</strong>"; 
-                        b.innerHTML += CANSItems[i].substr(val.length); 
-                        b.innerHTML += "<input type='hidden' value='" + CANSItems[i] + "'>";
-
-                        b.addEventListener("click", function(e){
-                            console.log(this.getElementsByTagName("input")[0].value); 
-                            closeAllLists()
-                        });
-                        a.appendChild(b); 
+                for(let i =0; i < CANSItems.length; i++){
+                    if(CANSItems[i].substr(0,searchBar.value.length).toLowerCase() == searchBar.value.toLowerCase() && searchBar.value != ""){
+                        let a = document.createElement('li');
+                        a.setAttribute("class", "autocomplete-item");
+                        a.innerHTML = "<Strong>" + CANSItems[i].substr(0, searchBar.value.length) + "</Strong>"; 
+                        a.innerHTML += CANSItems[i].substr(searchBar.value.length); 
+                        a.innerHTML += "<input type = 'hidden' value = '" + CANSItems[i] + "'>";
+                        auto.appendChild(a);  
+                        a.addEventListener("click", function (e){
+                            searchBar.value = this.getElementsByTagName("input")[0].value; 
+                            closeAllLists(); 
+                        })
                     }
-                }
-                function closeAllLists(){
-                    let x = document.getElementsByClassName("autocomplete-items"); 
-                    for(let i = 0; i < x.length; i++){
-                        x[i].parentNode.removeChild(x[i]); 
-                    }
-                }
+                } 
             });
-            */
+            
+
+            function closeAllLists(){
+                let list = document.querySelectorAll(".autocomplete-item"); 
+                list.forEach(element => {
+                    element.remove(); 
+                });
+            }
 
             //button for making pdf
             const pdfButton = document.getElementById("download"); 
@@ -268,10 +276,7 @@
         }
 
         //searches for the item and adds it to found
-        function search(){
-            const searchBar = document.getElementById("search-item");
-            let searchItem = searchBar.value; 
-            searchBar.value = ""; 
+        function search(searchItem){
             const regex = /[^A-Za-z]/g;
             searchItem = searchItem.replace(regex, '');
             searchItem = searchItem.toLowerCase(); 
@@ -299,26 +304,26 @@
                 }
             }
         }
+
         //checks if the checkbox is selected, if it is it adds the row to the added table
         //Resets the foundArray and found table. 
         function readyAdd(){
             const table = document.getElementById("found-table");
             let rowCount = table.rows.length; 
-            for(let i = 1; i < rowCount; i++){
+            for(let i = rowCount-1; i > 0; i--){
                 let row = table.rows[i]; 
                 let chckb = row.cells[0].getElementsByTagName('input')[0]; 
                 if(chckb.checked == true){
                     if(!addedArray.includes(row.cells.innerHTML)){
                         createAddedRows(row.cells[1].innerHTML, row.cells[2].innerHTML); 
                         addedArray.push(row.cells[1].innerHTML);
+                        table.deleteRow(i);
                     }
- 
                 }
-            }
-            for(let i = 0; i < rowCount -1; i+=1){
-                table.deleteRow(1); 
+
             }
         }
+
         //adds rows to the list table
         function createAddedRows(rowItem1, rowItem2){
             const tableAdd = document.getElementById("added-table"); 
@@ -361,7 +366,6 @@
                 if(chckb.checked == true){
                     let index = addedArray.indexOf(row.cells[1].innerHTML);
                     addedArray.splice(index, 1); 
-                    console.log(addedArray)
                     listTable.deleteRow(i); 
                 }
             }
@@ -417,10 +421,12 @@
     </header>
     <h3>Enter the CANS 50 Item below</h3>
     <div class="search-card">
-        <div class="autocomplete">
+        <div id="autocomplete">
             <input id = "search-item" type="text" placeholder="Search" onfocus="this.value=''" value=""></input>
-        </div>
+
         <button id = "submit">Search!</button>
+        </div>
+        <ul id = "auto-list"></ul>
     </div>
 
     <div class="found-card">
