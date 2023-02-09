@@ -1,3 +1,8 @@
+<!--
+    Add the ability to list all the items at once and select them like a check mark 
+    Reverse ability to ICD 10 -> CANS Items
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +43,8 @@
         .autocomplete-item:hover{background-color: grey; cursor: pointer}
         ul{list-style-type: none; margin-top: 0;}
         li{padding-left: 10px; padding-right: 10px;}
+        .switchDiv{background: #7A7D7D; border: 2px black solid; display: flex; flex-direction: column; justify-content: flex-start; align-items: center;}
+        #switchDirection{padding: 5px; margin: 0px; }
     </style>
 <!------------------------------------------------------------------------------------------------------------------------------------------>
 
@@ -51,12 +58,33 @@
         //Global Varriables
         let foundArray = []; 
         let addedArray = []; 
+        let direction = true; 
 
         const CANSItems = ['Psychosis', 'Impulsivity Hyperactivity', 'Depression', 'Anxiety', 'Oppositional', 'Conduct', 'Anger Control', 'Substance Use', 'Adjustment to Trauma', 'Family Functioning', 'Living Situation', 'Social Functioning', 'Developmental/Intellectual', 'Decision Making',
                         'School Behavior', 'School Achievement', 'School Attendance', 'Medical/Physical', 'Sexual Development', 'Sleep', 'Suicide Risk', 'Non-Suicidal-Self-Injurious behavior', 'Other Self Harm (Recklessness)', 'Danger to Others', 'Sexual Aggression', 'Delinquent Behavior',
                         'Runaway', 'Intentional Misbehavior', 'Language', 'Traditions and Rituals', 'Cultural Stress', 'Family Strengths', 'Interpersonal', 'Educational Setting', 'Talents and Interests', 'Spiritual/Religious', 'Cultural Identity', 'Community Life', 'Natural Supports', 
                         'Resiliency', 'Supervision (Care Giver)', 'Involvement with Care (Care Giver)', 'Knowledge (Care Giver)', 'Social Resources (Care Giver)', 'Residential Stability (Care Giver)', 'Medical/Physical (Care Giver)', 'Mental Health (Care Giver)', 'Substance Use (Care Giver)', 'Developmental (Caregiver)',
                         'Safety (Care Giver)'];
+
+        const ICD10Items = ['Psychotic Disorder', 'Catatonic Disorder', 'Psychotic Disorder with Delusions', 'Mood Diorder', 'Anxiety Disorder', 'Mild Neurocognitive Disorder', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'Personality and Beh Disorders', 'Alcohol Related Disorder', 'Opiod Related Disorders',
+                        'Cannabis Related Disorders', 'Sedative Hypnotic or Anxiolytic Disorders', 'Cocaine Related Disorders', 'Other Stimulant Related Disorders', 'Hallucinogen Related Disorders', 'Nicotine Dependence', 'Inhalent Related Disorders', 'Other Psychoative Substance Related Disorders', 
+                        'Schizophrenia', 'Schizotypal Disorder', 'Delusional Disorders', 'Brief Psychotic Disorder', 'Shared Psychotic Disorder', 'Schizoaffective Disorders', 'Other Psychotic Diorder not due to substance or know physiol. cond.', 'Unspecified Psychotic Diorder not due to substance or know physiol. cond.', 
+                        'Manic Episode', 'Bipolar Disorder', 'Depressive Episode', 'Major Depressive Disorder, Recurrent', 'Persistent Mood [Affective] Disorders (cyclothymia, dysthymia)', 'Unspecified Mood [Affective]Disorder', 'Phobic Anxiety Disorders', 'Agoraphobia', 'Social Phobias', 'Specific Phobias (Animal type, Natural environ, blood/injury, situational)', 
+                        'Other Phobic Anxiety Disorders (childhood)', 'Phobic Anxiety Disorder, unspecified', 'Other Anxiety Disorders', 'Obsessive-Compulsive Disorder', 'Reaction to Severe Stress, and Adjustment Disorders', 'Acute Stress Reaction', 'PTSD', 'Adjustment Disorders (culture shock, grief reaction, hospitalism in childr)', 'Other reactions to severe stress', 
+                        'Reaction to Severe Stress, unspecified', 'Dissociative and Conversion Disorders', 'Somatofom Disorders', 'Eating Disorders', 'Sleep Disorders not due to a substance or known physiological condition', 'Sexual Dysfunction not due to a substance or known physiological condition', 'Mental/Beh Disorders assc with peurperium', 'Postpartum Depression', 
+                        'Puerperal Psychosis', 'Abuse of non-psychoative substances', 'Unspecified beh syndroms associated with physiological disturbances and physical factors', 'Impulse Disorders', 'Pathological Gambling', 'Pyromania', 'Keptomania', 'Trichotillomania', 'Other Impulse Disorders (intermittent explosive disorder)', 'Impulse Disorder, unspecified', 'Gender Identity Disorders', 
+                        'Paraphilias', 'Mild Intellectual Disabilities', 'Moderate Intellectual Disabilities', 'Severe Intellectual Disabilities', 'Profound Intellectual Disabilities', 'Other Intellectual Disabilities', 'Unspecified Intellectual Disabilities', 'Specific Developmental Disorder of Speech and Language', 'Specific Developmental Disorders of Scholastic Skills', 
+                        'Specific Developmental Disorders of Motor Function', 'Pervasive Developmental Disorders', 'Autistic Disorder', 'Rhett\'s Syndrome', 'Other Childhood Disintegrative Disorder', 'Asperger\'s Syndrome', 'Other Pervasive Developmental Disorders', 'Pervasive Developmental Disorders, unspecified', 'Attention-Deficit Hyperactivity Disorders', 'ADHD, predominanty inattentive type', 
+                        'ADHD, predominanty hyperactive type', 'ADHD, combined type', 'ADHD, other type', 'ADHD, unspecified type', 'Conduct Disorders', 'Conduct disorder confied to family context', 'Conduct disorder, childhood-onset type', 'Conduct disorder, adolescent type', 'Oppositional Definant Disoder', 'Other conduct disorder', 'Conduct Disorder, unspecified', 'Emotional disorder with onset specific to childhood', 
+                        'Separation anxiety disorder of childhood', 'Other Childhood amotional disorders (gender identity disorder)', 'Childhood emotional disorder, unspecified', 'Disorder of social functioning with onset specific to childhood/adolescence', 'Selective mutism', 'Reactive Attachment Disorder of Childhood', 'Disinhibited Attachment Disorder of Childhood', 'Other childhood disorders of social functioning', 
+                        'Childhood disorder of social functioning, unspecified', 'Tic Disorder', 'Transient Tic Disorder', 'Chronic motor or vocal tic disorder', 'Tourette\'s disorder', 'Other tic disorders', 'Tic disorder, unspecified', 'Enuresis not due to a subtance or known physiological condition', 'Encopresis not due to a substance or known physiolgical condition', 'Stereotyped movement disorders', 'Mental disorder, not otherwise specified', 
+                        'Problems related to education and literacy', 'Illiteracy and low-level literacy', 'Schooling unavailable and unattainable', 'Failed school examinations', 'Underachievement in school', 'Educational maladjustment and disord with teachers/classmates', 'Less than a high school diploma', 'Other problems related to education and literacy (inadequte teaching)', 'Problems related to education and literacy, unspecified', 
+                        'Problems reated to physical environment', 'Inadequte drinking-water supply', 'Problems reatled to houseing and economic circumstances', 'Homelessness', 'Inadequte housing', 'Discord with neighbors, lodgers and landlord', 'Problems related to living in residential institution', 'Other problems reatled to housing and economic circumstances (housing instability, transportation/financial insecurity, material hardship)', 'Problem reated to house and economic cirucmstances, unspecified',
+                        'Problems reatled to social environment', 'Acculturaltion Difficulty', 'Social exclusion and rejection', 'Target of (perceived) adverse discrimination and persecution', 'Other problems reated to social environment', 'Problem related to social environment, unspecified', 'Probems related to upbringing', 'Inadequate parental supervision and control', 'Parental overprotection ', 'Upbringing away from parents (child welfare custory, institutional upbr)', 'Hostility towards and scapegoating of child', 
+                        'Inappropriate (excessive) parental pressure', 'Other Specified problems reated to upbringing', 'Personal hx of physical and sexual abuse in childhood', 'Personal hx of psychological abuse in childhood', 'Personal hx of neglect in childhood', 'Personal hx of foced labor or sexual exploitation in childhood', 'Personal hx of unspecified abuse in childhood', 'Parent-biological child conflict', 'Parent-adopted child conflict', 'Parent-foster child conflict', 'Other specified problems related to upbringing', 
+                        'Parent-child estrangement NEC', 'Sibling Rivary', 'Other specified problems related to upbringing', 'Problem reated to upbringing, unspecified', 'Problems in relationship with spouse or partner', 'Problems in relationship with in-laws', 'Dependent relative needing care at home', 'Other stressful life events affecting family and household', 'Stress on family due to return of family member from military deplymt', 'Other stressful life events affecting family and household', 'Other specified problems reatled to primary support group', 
+                        'Other problem related to primary support group, unspecified', 'Conviction in civil and criminal proceedings without imprisonment', 'Imprisonment and other incarceration', 'Problems related to release from prison', 'Problems realted to other legal circumstances'];
+
         
         const CANSDiag = [['psychosis', 'F06.0', 'Psychotic Disorder', 'F06.1', 'Catatonic Disorder', 'F06.2', 'Psychotic Disorder with Delusions', 'F06.7', 'Mild Neurocognitive Disorder',
                         'F06.8', 'Other Specified mental disorders (epileptic, psychosis, OCD)', 'F20', 'Schizophrenia', 'F21', 'Schizotypal Disorder', 'F22', 'Delusional Disorders',
@@ -208,6 +236,68 @@
                 closeAllLists(); 
             }); 
 
+            /*
+            remove selected function doesnt remove from array so item cannot be re searched for
+            need to set up download for backwards
+            */
+            const directionButton = document.getElementById("switchB"); 
+            directionButton.addEventListener('click', function(e){
+                const titleDirection = document.getElementById("titleD");
+                const switchD = document.getElementById("switchDirection");
+                const foundD = document.getElementById("foundTitle"); 
+                const downloadD = document.getElementById("downloadTitle"); 
+                const table = document.getElementById("found-table");
+                const itemName = document.getElementById("item"); 
+                const itemName2 = document.getElementById("item1");
+                let rowCount = table.rows.length; 
+                for(let i = rowCount-1; i > 0; i--){
+                    let row = table.rows[i]; 
+                            table.deleteRow(i);
+                }
+                const table1 = document.getElementById("added-table");
+                let rowCount1 = table1.rows.length; 
+                for(let i = rowCount1-1; i > 0; i--){
+                    let row = table1.rows[i]; 
+                    table1.deleteRow(i);
+                }
+                foundArray = []; 
+                addedArray = []; 
+                if(direction ==  false){
+                    const foundH = document.getElementById("foundheader"); 
+                    const addedH = document.getElementById("addedheader")
+                    titleDirection.innerText = "Enter the CANS 50 Item below";
+                    switchD.innerText = "CANS 50 Items to ICD 10 Items"
+                    foundD.innerText = "Found ICD 10 Items";
+                    downloadD.innerText = "ICD 10 Items Ready to be Downloaded"; 
+                    let colF = document.createElement('th'); 
+                    colF.innerHTML = 'ICD 10 Item'
+                    foundH.appendChild(colF); 
+                    let colA = document.createElement('th'); 
+                    colA.innerHTML = 'ICD 10 Item'
+                    addedH.appendChild(colA); 
+                    itemName.innerHTML = "ICD 10 Item";
+                    itemName2.innerHTML = "ICD 10 Item";
+                    direction = true; 
+                }
+                else if(direction == true){
+                    titleDirection.innerText = "Enter the ICD 10 Item below";
+                    switchD.innerText = "ICD 10 Items to CANS 50 Items";
+                    foundD.innerText = "Found CANS 50 Items";
+                    downloadD.innerText = "CANS 50 Items Ready to be Downloaded"; 
+                    let trows = table.rows; 
+                    for(let i =0; i < trows.length; i++){
+                        trows[i].deleteCell(2); 
+                    }
+                    let trows1 = table1.rows; 
+                    for(let i =0; i < trows1.length; i++){
+                        trows1[i].deleteCell(2); 
+                    }
+                    itemName.innerHTML = "CANS 50 Item"
+                    itemName2.innerHTML = "CANS 50 Item"
+                    direction = false; 
+                }
+            })
+
             //add diagnosis to list
             const addFoundButton = document.getElementById("add");
             addFoundButton.addEventListener('click', readyAdd);
@@ -229,20 +319,40 @@
                     event.preventDefault(); 
                     searchButton.click(); 
                 }
-                for(let i =0; i < CANSItems.length; i++){
-                    if(CANSItems[i].substr(0,searchBar.value.length).toLowerCase() == searchBar.value.toLowerCase() && searchBar.value != ""){
-                        let a = document.createElement('li');
-                        a.setAttribute("class", "autocomplete-item");
-                        a.innerHTML = "<Strong>" + CANSItems[i].substr(0, searchBar.value.length) + "</Strong>"; 
-                        a.innerHTML += CANSItems[i].substr(searchBar.value.length); 
-                        a.innerHTML += "<input type = 'hidden' value = '" + CANSItems[i] + "'>";
-                        auto.appendChild(a);  
-                        a.addEventListener("click", function (e){
-                            searchBar.value = this.getElementsByTagName("input")[0].value; 
-                            closeAllLists(); 
-                        })
+                if(direction == true){
+                    for(let i =0; i < CANSItems.length; i++){
+                        if(CANSItems[i].substr(0,searchBar.value.length).toLowerCase() == searchBar.value.toLowerCase() && searchBar.value != ""){
+                            let a = document.createElement('li');
+                            a.setAttribute("class", "autocomplete-item");
+                            a.innerHTML = "<Strong>" + CANSItems[i].substr(0, searchBar.value.length) + "</Strong>"; 
+                            a.innerHTML += CANSItems[i].substr(searchBar.value.length); 
+                            a.innerHTML += "<input type = 'hidden' value = '" + CANSItems[i] + "'>";
+                            auto.appendChild(a);  
+                            a.addEventListener("click", function (e){
+                                searchBar.value = this.getElementsByTagName("input")[0].value; 
+                                closeAllLists(); 
+                            })
+                        }
                     }
-                } 
+                         
+                }
+                else if(direction == false){
+                    for(let i =0; i < ICD10Items.length; i++){
+                        if(ICD10Items[i].substr(0,searchBar.value.length).toLowerCase() == searchBar.value.toLowerCase() && searchBar.value != ""){
+                            let a = document.createElement('li');
+                            a.setAttribute("class", "autocomplete-item");
+                            a.innerHTML = "<Strong>" + ICD10Items[i].substr(0, searchBar.value.length) + "</Strong>"; 
+                            a.innerHTML += ICD10Items[i].substr(searchBar.value.length); 
+                            a.innerHTML += "<input type = 'hidden' value = '" + ICD10Items[i] + "'>";
+                            auto.appendChild(a);  
+                            a.addEventListener("click", function (e){
+                                searchBar.value = this.getElementsByTagName("input")[0].value; 
+                                closeAllLists(); 
+                            })
+                        }
+                    } 
+                }
+
             });
             
 
@@ -280,30 +390,70 @@
 
         //searches for the item and adds it to found
         function search(searchItem){
-            const regex = /[^A-Za-z]/g;
-            searchItem = searchItem.replace(regex, '');
-            searchItem = searchItem.toLowerCase(); 
-            for(let i = 0; i < CANSDiag.length; i++){
-                if(CANSDiag[i][0] == searchItem){
-                    createFoundRows(CANSDiag[i]); 
+            if(direction == true){
+                const regex = /[^A-Za-z]/g;
+                searchItem = searchItem.replace(regex, '');
+                searchItem = searchItem.toLowerCase(); 
+                for(let i = 0; i < CANSDiag.length; i++){
+                    if(CANSDiag[i][0] == searchItem){
+                        createFoundRows(CANSDiag[i]); 
+                    }
                 }
             }
+            else if(direction == false){
+                const regex = /[^A-Za-z]/g;
+                searchItem = searchItem.replace(regex, '');
+                searchItem = searchItem.toLowerCase(); 
+                for(let i = 0; i < CANSDiag.length; i++){
+                    for(let j = 1; j < CANSDiag[i].length; j++){
+                        let temp = CANSDiag[i][j]; 
+                        temp = temp.replace(regex, '');
+                        temp = temp.toLowerCase(); 
+                        if(temp == searchItem){
+                            for(let k = 0; k < CANSItems.length; k++){
+                                let temp2 = CANSItems[k]; 
+                                temp2 = temp2.replace(regex, '');
+                                temp2 = temp2.toLowerCase(); 
+                                if(CANSDiag[i][0] == temp2){
+                                    createFoundRows(CANSItems[k]); 
+                                }
+                            }
+
+                        }
+                        
+                    }
+
+                }
+            }
+
         }
         
         //adds the row to the found table
         function createFoundRows(searchItem){
             const table = document.getElementById("found-table");
-            for(let i = 1; i < searchItem.length; i +=2 ){
-                if(!foundArray.includes(searchItem[i])){
+            if(direction == true){
+                for(let i = 1; i < searchItem.length; i +=2 ){
+                    if(!foundArray.includes(searchItem[i])){
+                        let row = table.insertRow(-1);
+                        let cell0 = row.insertCell(0);
+                        let cell1 = row.insertCell(1);
+                        let cell2 = row.insertCell(2);
+                        cell0.innerHTML = `<input type="checkbox" name= "added" checked>`;
+                        cell1.innerHTML = searchItem[i];
+                        cell2.innerHTML = searchItem[i+1]; 
+                        foundArray.push(searchItem[i]);
+                        foundArray.push(searchItem[i+1]);
+                    }
+                }
+            }
+            else if(direction == false){
+                if(!foundArray.includes(searchItem)){
                     let row = table.insertRow(-1);
                     let cell0 = row.insertCell(0);
                     let cell1 = row.insertCell(1);
-                    let cell2 = row.insertCell(2);
                     cell0.innerHTML = `<input type="checkbox" name= "added" checked>`;
-                    cell1.innerHTML = searchItem[i];
-                    cell2.innerHTML = searchItem[i+1]; 
-                    foundArray.push(searchItem[i]);
-                    foundArray.push(searchItem[i+1]);
+                    cell1.innerHTML = searchItem; 
+                    foundArray.push(searchItem)
                 }
             }
         }
@@ -318,9 +468,17 @@
                 let chckb = row.cells[0].getElementsByTagName('input')[0]; 
                 if(chckb.checked == true){
                     if(!addedArray.includes(row.cells.innerHTML)){
-                        createAddedRows(row.cells[1].innerHTML, row.cells[2].innerHTML); 
-                        addedArray.push(row.cells[1].innerHTML);
-                        table.deleteRow(i);
+                        if(direction == true){
+                            createAddedRows(row.cells[1].innerHTML, row.cells[2].innerHTML); 
+                            addedArray.push(row.cells[1].innerHTML);
+                            table.deleteRow(i);  
+                        }
+                        else if(direction == false){
+                            createAddedRows(row.cells[1].innerHTML); 
+                            addedArray.push(row.cells[1].innerHTML);
+                            table.deleteRow(i);
+                        }
+
                     }
                 }
 
@@ -333,10 +491,13 @@
             let row = tableAdd.insertRow(-1); 
             let cell0 = row.insertCell(0);
             let cell1 = row.insertCell(1);
-            let cell2 = row.insertCell(2);
+            if(direction == true){
+                let cell2 = row.insertCell(2);
+                cell2.innerHTML = rowItem2; 
+            }
+
             cell0.innerHTML = `<input type="checkbox" name= "listed">`;
             cell1.innerHTML = rowItem1;
-            cell2.innerHTML = rowItem2; 
         }
 
         function generatePDF() {
@@ -367,8 +528,21 @@
                 let row = listTable.rows[i]; 
                 let chckb = row.cells[0].getElementsByTagName('input')[0]; 
                 if(chckb.checked == true){
-                    let index = addedArray.indexOf(row.cells[1].innerHTML);
-                    addedArray.splice(index, 1); 
+                    for(let j =0; j < foundArray.length; j++){
+                        console.log(foundArray[j]);
+                    }
+                    let index = foundArray.indexOf(row.cells[1].innerHTML)
+                    if(direction == true){
+                        foundArray.splice(index+1, 1);
+                        foundArray.splice(index, 1)
+                    }
+                    else{
+                        foundArray.splice(index, 1)
+                    }
+
+                    for(let j =0; j < foundArray.length; j++){
+                        console.log(foundArray[j]);
+                    }
                     listTable.deleteRow(i); 
                 }
             }
@@ -422,7 +596,12 @@
             <h1>CANS 50 Items - ICD 10 Items Map</h1>
         </div>
     </header>
-    <h3>Enter the CANS 50 Item below</h3>
+    
+    <div class="switchDiv">
+        <h4 id = "switchDirection">CANS 50 Items to ICD 10 Items</h4>
+        <button id = "switchB">Switch</button>
+    </div>
+    <h3 id = "titleD">Enter the CANS 50 Item below</h3>
     <div class="search-card">
         <div id="autocomplete">
             <input id = "search-item" type="text" placeholder="Search" onfocus="this.value=''" value=""></input>
@@ -431,15 +610,16 @@
         <ul id = "auto-list"></ul>
     </div>
 
+
     <div class="found-card">
-        <h2>Staged ICD-10 Items</h2>
+        <h2 id = "foundTitle">Found ICD 10 Items</h2>
         <p>Select the Items you would like to add to the list</p>
         <table id = "found-table">
             <thead>
-                <tr>
+                <tr id = "foundheader">
                     <th>Selected</th>
-                    <th>ID</th>
-                    <th>ICD Item</th>
+                    <th id = "item">ID</th>
+                    <th>ICD 10 Item</th>
                 </tr>
             </thead>
             <tbody id = "table-found-body">
@@ -454,14 +634,14 @@
     </div>
 
     <div id = "added-card" class="added-card">
-        <h2>ICD-10 Items Ready to be Downloaded</h2>
+        <h2 id = "downloadTitle">ICD 10 Items Ready to be Downloaded</h2>
         <p>Click Download to Download the list</p>
         <table id = "added-table">
             <thead>
-                <tr>
+                <tr id = "addedheader">
                     <th>Selected</th>
-                    <th>ID</th>
-                    <th>ICD Item</th>
+                    <th id = "item1">ID</th>
+                    <th>ICD 10 Item</th>
                 </tr>
             </thead>
         </table>
